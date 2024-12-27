@@ -18,8 +18,46 @@ CLIPPER::CLIPPER(const invariants::PairwiseInvariantPtr& invariant, const Params
 
 // ----------------------------------------------------------------------------
 
+std::tuple<Association, std::vector<int32_t>> CLIPPER::filterSemanticAssociations(
+    const std::vector<int32_t>& labels1,
+    const std::vector<int32_t>& labels2,
+    const Association& A)
+{
+    std::vector<Eigen::RowVector2i> filtered_rows;
+    std::vector<int32_t> filteredLabels;
+
+    for (int i = 0; i < A.rows(); ++i) {
+        // Fetch indices from the association matrix
+        int index1 = A(i, 0);
+        int index2 = A(i, 1);
+
+        // Get the labels from the respective indices
+        int32_t label1 = labels1[index1];
+        int32_t label2 = labels2[index2];
+
+        // Verify semantic labels are consistent
+        if (label1 == label2 && label1 != -1) {
+            // Add the association and the label
+            filtered_rows.emplace_back(Eigen::RowVector2i(index1, index2));
+            filteredLabels.push_back(label1);
+        }
+    }
+
+    // Convert the filtered rows to an Eigen matrix
+    Association filteredA(filtered_rows.size(), 2);
+    for (size_t i = 0; i < filtered_rows.size(); ++i) {
+        filteredA.row(i) = filtered_rows[i];
+    }
+
+    return std::make_tuple(filteredA, filteredLabels);
+}
+
+
+// ----------------------------------------------------------------------------
+
 void CLIPPER::scorePairwiseConsistency(const invariants::Data& D1,
-                              const invariants::Data& D2, const Association& A)
+                                       const invariants::Data& D2, 
+                                       const Association& A)
 {
   if (A.size() == 0) A_ = utils::createAllToAll(D1.cols(), D2.cols());
   else A_ = A;

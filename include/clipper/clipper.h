@@ -81,14 +81,18 @@ namespace clipper {
     CLIPPER(const invariants::PairwiseInvariantPtr& invariant, const Params& params);
     ~CLIPPER() = default;
 
+    std::tuple<Association, std::vector<int32_t>> filterSemanticAssociations(const std::vector<int32_t>& labels1,
+                                                                         const std::vector<int32_t>& labels2,
+                                                                         const Association& A);
+
     /**
-   * @brief      Creates an affinity matrix containing consistency scores for
-   *             each of the m pairwise associations listed in matrix A.
-   *
-   * @param[in]  D1           Dataset 1 of n1 d-dim elements (dxn1)
-   * @param[in]  D2           Dataset 2 of n2 d-dim elements (dxn2)
-   * @param[in]  A            Associations to score (mx2)
-   */
+     * @brief      Creates an affinity matrix containing consistency scores for
+     *             each of the m pairwise associations listed in matrix A.
+     *
+     * @param[in]  D1           Dataset 1 of n1 d-dim elements (dxn1)
+     * @param[in]  D2           Dataset 2 of n2 d-dim elements (dxn2)
+     * @param[in]  A            Associations to score (mx2)
+     */
     void scorePairwiseConsistency(const invariants::Data& D1,
                                   const invariants::Data& D2,
                                   const Association& A = Association());
