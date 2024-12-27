@@ -80,6 +80,27 @@ void pybind_invariants(py::module& m)
 
   py::class_<PointNormalDistance, PairwiseInvariant, PyPairwiseInvariant<PointNormalDistance>, std::shared_ptr<PointNormalDistance>>(m, "PointNormalDistance")
     .def(py::init<const PointNormalDistance::Params&>());
+
+  //
+  // Semantics Constrained Euclidean Distance
+  //
+  
+  py::class_<SemanticsConstrainedEuclideanDistance::Params>(m, "SemanticsConstrainedEuclideanDistanceParams")
+    .def(py::init<>())
+    .def("__repr__", [](const SemanticsConstrainedEuclideanDistance::Params &params) {
+      std::ostringstream repr;
+      repr << "<SemanticsConstrainedEuclideanDistanceParams : sigma=" << params.sigma;
+      repr << " epsilon=" << params.epsilon;
+      repr << " mindist=" << params.mindist << ">";
+      return repr.str();
+    })
+    .def_readwrite("sigma", &clipper::invariants::SemanticsConstrainedEuclideanDistance::Params::sigma)
+    .def_readwrite("epsilon", &clipper::invariants::SemanticsConstrainedEuclideanDistance::Params::epsilon)
+    .def_readwrite("mindist", &clipper::invariants::SemanticsConstrainedEuclideanDistance::Params::mindist);
+
+  py::class_<SemanticsConstrainedEuclideanDistance, PairwiseInvariant, PyPairwiseInvariant<SemanticsConstrainedEuclideanDistance>, std::shared_ptr<SemanticsConstrainedEuclideanDistance>>(m, "SemanticsConstrainedEuclideanDistance")
+    .def(py::init<const SemanticsConstrainedEuclideanDistance::Params&>());
+
 }
 
 // ----------------------------------------------------------------------------
@@ -213,6 +234,10 @@ PYBIND11_MODULE(clipperpy, m)
       repr << "<CLIPPER>";
       return repr.str();
     })
+    .def("filter_semantic_associations", &clipper::CLIPPER::filterSemanticAssociations,
+          "labels1"_a.noconvert(), 
+          "labels2"_a.noconvert(), 
+          "A"_a.noconvert())
     .def("score_pairwise_consistency", &clipper::CLIPPER::scorePairwiseConsistency,
           // py::call_guard<py::gil_scoped_release>(),
           "D1"_a.noconvert(), "D2"_a.noconvert(), "A"_a.noconvert())
