@@ -113,36 +113,36 @@ params = clipperpy.Params()
 params.rounding = clipperpy.Rounding.DSD_HEU
 clipper = clipperpy.CLIPPER(invariant, params)
 
-# t0 = time.perf_counter()
-# clipper.score_pairwise_consistency(D1, D2, A)
-# t1 = time.perf_counter()
-# print(f"Affinity matrix creation took {t1-t0:.3f} seconds")
+t0 = time.perf_counter()
+clipper.score_pairwise_consistency(D1, D2, A)
+t1 = time.perf_counter()
+print(f"Affinity matrix creation took {t1-t0:.3f} seconds")
 
-# t0 = time.perf_counter()
-# clipper.solve()
-# t1 = time.perf_counter()
+t0 = time.perf_counter()
+clipper.solve()
+t1 = time.perf_counter()
 
-# # A = clipper.get_initial_associations()
-# Ain = clipper.get_selected_associations()
+# A = clipper.get_initial_associations()
+Ain = clipper.get_selected_associations()
 
-# p = np.isin(Ain, Agt)[:,0].sum() / Ain.shape[0]
-# r = np.isin(Ain, Agt)[:,0].sum() / Agt.shape[0]
-# print(f"CLIPPER selected {Ain.shape[0]} inliers from {A.shape[0]} "
-#       f"putative associations (precision {p:.2f}, recall {r:.2f}) in {t1-t0:.3f} s")
+p = np.isin(Ain, Agt)[:,0].sum() / Ain.shape[0]
+r = np.isin(Ain, Agt)[:,0].sum() / Agt.shape[0]
+print(f"CLIPPER selected {Ain.shape[0]} inliers from {A.shape[0]} "
+      f"putative associations (precision {p:.2f}, recall {r:.2f}) in {t1-t0:.3f} s")
 
-# model = o3d.geometry.PointCloud()
-# model.points = o3d.utility.Vector3dVector(D1.T)
-# model.paint_uniform_color(np.array([0,0,1.]))
-# data = o3d.geometry.PointCloud()
-# data.points = o3d.utility.Vector3dVector(D2.T)
-# data.paint_uniform_color(np.array([1.,0,0]))
+model = o3d.geometry.PointCloud()
+model.points = o3d.utility.Vector3dVector(D1.T)
+model.paint_uniform_color(np.array([0,0,1.]))
+data = o3d.geometry.PointCloud()
+data.points = o3d.utility.Vector3dVector(D2.T)
+data.paint_uniform_color(np.array([1.,0,0]))
 
-# # corr = o3d.geometry.LineSet.create_from_point_cloud_correspondences(model, data, Ain)
-# # o3d.visualization.draw_geometries([model, data, corr])
+# corr = o3d.geometry.LineSet.create_from_point_cloud_correspondences(model, data, Ain)
+# o3d.visualization.draw_geometries([model, data, corr])
 
-# p2p = o3d.pipelines.registration.TransformationEstimationPointToPoint()
-# That_21 = p2p.compute_transformation(model, data, o3d.utility.Vector2iVector(Ain))
+p2p = o3d.pipelines.registration.TransformationEstimationPointToPoint()
+That_21 = p2p.compute_transformation(model, data, o3d.utility.Vector2iVector(Ain))
 
-# get_err(T_21, That_21)
+get_err(T_21, That_21)
 
-# draw_registration_result(model, data, That_21)
+draw_registration_result(model, data, That_21)
